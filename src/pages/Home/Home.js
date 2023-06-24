@@ -2,37 +2,43 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getTopMovies } from 'fetch_api/fetch_api';
 import { SectionTopMovies, ListTopMovies } from './Home.styled';
+import { Loader } from 'components/Loader/Loader';
 
 const Home = () => {
-  const [movies, setMovie] = useState([]);
+  const [listMovies, setListMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   // const location = useLocation(); //для отримання шляху з якого переходимо для передачи через props
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchListMovies = async () => {
       try {
+        setIsLoading(true);
         const data = await getTopMovies();
-        const movies = data.results;
-        setMovie(movies);
+        const listMovies = data.results;
+
+        setListMovies(listMovies);
       } catch (error) {
         setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchMovies();
+    fetchListMovies();
   }, []);
 
   return (
     <SectionTopMovies>
-      <h1>Trending today</h1>
-
+    
       {error && <p>Sorry, something went wrong</p>}
-
+      {isLoading && <Loader />}
+        <h1>Trending today</h1>
       <ListTopMovies>
-        {movies.map(film => (
-          <li key={film.id}>
-            <Link to={`movies/${film.id}`} state={{}}>
-              {film.title}
+        {listMovies.map(movie => (
+          <li key={movie.id}>
+            <Link to={`movies/${movie.id}`} state={{}}>
+              {movie.title}
             </Link>
           </li>
         ))}
