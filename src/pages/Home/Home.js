@@ -30,7 +30,6 @@ const Home = () => {
 
   return (
     <SectionTopMovies>
-    
       {error && <p>Sorry, something went wrong</p>}
       {isLoading && <Loader />}
         <h1>Trending today</h1>
