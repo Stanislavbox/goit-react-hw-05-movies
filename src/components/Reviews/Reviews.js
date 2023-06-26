@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getReviews } from 'fetch_api/fetch_api';
+import { ReviewsWrapper, ErrorMessage,ReviewList, ReviewItem, ReviewAuthor, ReviewContent} from './Reviews.styled';
 
 export const Reviews = () => {
   const { movieId } = useParams();
@@ -11,12 +12,11 @@ export const Reviews = () => {
     const fetchReviews = async () => {
       try {
         const data = await getReviews(movieId);
-        const reviews = data.results;
-        console.log('first', reviews);
-        if (!reviews.length) {
+        const reviewList = data.results;
+        if (!reviewList.length) {
           setError(`There are no reviews`);
         }
-        setReviews(reviews);
+        setReviews(reviewList);
       } catch (error) {
         setError(error.message);
       }
@@ -25,16 +25,16 @@ export const Reviews = () => {
     fetchReviews();
   }, [movieId]);
   return (
-    <div>
-      {error && <p>Error: {error}</p>}
-      <ul>
+    <ReviewsWrapper>
+      {error && <ErrorMessage>Error: {error}</ErrorMessage>}
+      <ReviewList>
         {reviews.map(review => (
-          <li key={review.id}>
-            <p>Author: {review.author}</p>
-            <p>{review.content}</p>
-          </li>
+          <ReviewItem key={review.id}>
+            <ReviewAuthor>Author: {review.author}</ReviewAuthor>
+            <ReviewContent>{review.content}</ReviewContent>
+          </ReviewItem>
         ))}
-      </ul>
-    </div>
+      </ReviewList>
+    </ReviewsWrapper>
   );
 };
