@@ -4,13 +4,13 @@ export const Header = styled.header`
   margin: 20px auto;
   border-radius: 20px;
   color: #fff;
-  & ul{
+  & ul {
     list-style: none;
   }
-  & a{
+  & a {
     color: grey;
   }
-  & .active{
+  & .active {
     color: orange;
   }
 `;

@@ -39,18 +39,22 @@ export const LinkItem = styled.li`
 export const GoBackLink = styled(Link)`
   display: inline-block;
   padding: 10px 20px;
-  margin-right: 12px;
+  margin: 12px;
   background-color: rgb(51, 51, 51);
   color: rgb(255, 255, 255);
   text-decoration: none;
   font-weight: bold;
+  height: 24px;
+  line-height: 24px;
   border-radius: 12px;
   cursor: pointer;
-  height: 24px;
-  line-height: 24px; /* Добавлено */
 
   &:hover {
     color: black;
     background-color: orange;
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px black;
+    }
   }
 `;

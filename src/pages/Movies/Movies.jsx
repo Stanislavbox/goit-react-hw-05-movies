@@ -11,28 +11,32 @@ import {
   SearchInput,
   NotFoundMessage,
   NotFoundContainer,
+  SearchButton,
 } from './Movies.styled';
 
 const Movies = () => {
   const [searchMovie, setSearchMovie] = useSearchParams();
-  const [movies, setMovie] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isInputEmpty, setIsInputEmpty] = useState(true);
-  const movieName = searchMovie.get('movieName') ?? '';
+  const [searchInputValue, setSearchInputValue] = useState('');
   const location = useLocation();
 
   useEffect(() => {
-    const fetchMovie = async () => {
+    const fetchMovies = async () => {
+      const movieName = searchMovie.get('movieName') ?? '';
+
       try {
         setIsLoading(true);
         const data = await getMovie(movieName);
-        setMovie(data.results);
+        setMovies(data.results);
         if (data.results.length === 0) {
           setError(`Movie '${movieName}' not found`);
         } else {
           setError(null);
         }
+        setIsInputEmpty(movieName === '');
       } catch (error) {
         setError(error.message);
       } finally {
@@ -40,30 +44,46 @@ const Movies = () => {
       }
     };
 
-    if (!isInputEmpty) {
-      fetchMovie();
-    }
-  }, [isInputEmpty, movieName]);
+    fetchMovies();
+  }, [searchMovie]);
+
+  useEffect(() => {
+    const movieName = searchMovie.get('movieName') ?? '';
+    setSearchInputValue(movieName);
+  }, [searchMovie]);
 
   const handleSearch = evt => {
-    const movieNameValue = evt.target.value;
-    if (movieNameValue === '') {
-      return setSearchMovie({});
+    setSearchInputValue(evt.target.value);
+  };
+
+  const handleSubmit = evt => {
+    evt.preventDefault();
+    if (searchInputValue === '') {
+      setIsInputEmpty(true);
+      setSearchMovie({});
+    } else {
+      setIsInputEmpty(false);
+      setSearchMovie({ movieName: searchInputValue });
     }
-    setSearchMovie({ movieName: movieNameValue });
-    setIsInputEmpty(false);
   };
 
   return (
     <MoviesWrapper>
       {isLoading && <Loader />}
 
-      <SearchForm>
+      <SearchForm onSubmit={handleSubmit}>
         <SearchLabel>Movie search</SearchLabel>
-        <SearchInput type="text" value={movieName} onChange={handleSearch} />
+        <SearchInput
+          type="text"
+          value={searchInputValue}
+          onChange={handleSearch}
+        />
+        <SearchButton type="submit">Search</SearchButton>
         {!isInputEmpty && error && (
           <NotFoundContainer>
-            <NotFoundMessage>Movie {movieName} not found</NotFoundMessage>
+            <NotFoundMessage>
+              Movie {searchInputValue} not found
+            </NotFoundMessage>
           </NotFoundContainer>
         )}
       </SearchForm>

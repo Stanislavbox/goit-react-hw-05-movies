@@ -32,7 +32,7 @@ const Home = () => {
     <SectionTopMovies>
       {error && <p>Sorry, something went wrong</p>}
       {isLoading && <Loader />}
-        <h1>Trending today</h1>
+      <h1>Trending today</h1>
       <ListTopMovies>
         {listMovies.map(movie => (
           <TopMovieItem key={movie.id}>

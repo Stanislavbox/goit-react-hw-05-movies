@@ -26,7 +26,7 @@ export const Cast = () => {
   }, [movieId, error]);
 
   return (
-    <CastList >
+    <CastList>
       {casts.map(cast => (
         <CastItem key={cast.id}>
           <ActorImage
